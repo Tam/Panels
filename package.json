@@ -1,0 +1,27 @@
+{
+  "name": "Panels",
+  "version": "0.0.1",
+  "author": "Tam <hi@tam.sx>",
+  "license": "MIT",
+  "description": "A very simple SPA framework",
+  "keywords": [
+    "spa",
+    "single",
+    "page",
+    "application",
+    "framework"
+  ],
+  "main": "dist/panels.min.js",
+  "files": [
+    "dist/panels.min.js",
+    "src"
+  ],
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-uglify": "*",
+    "jshint": "*",
+    "gulp-jshint": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-rename": "*"
+  }
+}

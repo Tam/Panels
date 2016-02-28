@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Panels Example</title>
+</head>
+<body>
+
+	<script src="js/vue.js"></script>
+	<script src="js/grapnel.js"></script>
+	<script src="../dist/panels.min.js"></script>
+	<script>
+		var app = new Panels({
+			debug: true,
+			preload: true
+		});
+
+		var home = new app.Panel({
+			templateUrl: 'panel1.html'
+		}, {}, {});
+	</script>
+</body>
+</html>
