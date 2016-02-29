@@ -51,7 +51,8 @@ var home = new app.Panel({
 ### Templates
 ```html
 <template class=“butts” data-dick=“butts”>
-	…
+	<a route=“[‘/job/:id’, {id:’22’}]”>Link</a>
+	[…]
 </template>
 
 <script>
@@ -80,3 +81,6 @@ If `appendChild` is **true**, the panel will be appended within it’s tag. If t
 
 ### Programatically Opening Panels
 If a panel does not have a route, it can only be opened programatically using `myPanel.open()` (and closed using `myPanel.close()`) (useful for modals).
+
+### Routing
+The attribute `route` will be parsed and the `href` attribute will be populated accordingly. If the route is the current route, the class `active` will be added to the element (can be configured).
