@@ -19,6 +19,59 @@
 	};
 
 	/**
+	 * Ajax
+	 *
+	 * @param {object} opts - Options
+	 * @constructor
+	 */
+	var Ajax = function (opts) {
+		// TODO: Implement using a promise
+		// TODO: Get ajax progress % for loading bar
+		var self = this;
+		this.options = Helpers.mergeObject(Ajax._defaults, opts);
+
+		var body = this.options.body;
+		if (body) body = (["string", "blob", "arraybuffer", "arraybufferview", "document", "text", "formdata"].indexOf(typeof body) > -1) ? body : JSON.stringify(body);
+
+		var req = new XMLHttpRequest();
+		req.open(this.options.method, this.options.url, true);
+
+		// TODO: Set Content-Type header according to body type
+
+		for (var key in this.options.headers) {
+			if (this.options.headers.hasOwnProperty(key))
+				req.setRequestHeader(key, options.headers[key]);
+		}
+
+		req.onerror = function () {
+			if (self.options.error)
+				self.options.error(req);
+		};
+
+		req.onload = function () {
+			if (req.status >= 200 && req.status < 400) {
+				if (self.options.success)
+					self.options.success(req, JSON.parse(req.responseText));
+			} else {
+				if (self.options.error)
+					self.options.error(req, JSON.parse(req.responseText));
+			}
+		};
+
+		if (body) req.send(body);
+		else req.send();
+	};
+
+	Ajax._defaults = {
+		method: 'GET',
+		url: '',
+		body: null,
+		headers: {},
+		success: function () {},
+		error: function () {}
+	};
+
+	/**
 	 * Panels
 	 *
 	 * @param {object} opts - Options Object
@@ -30,6 +83,9 @@
 
 		// Router
 		this.router = new Grapnel();
+
+		// Ajax
+		this.ajax = Ajax;
 
 		// Pass self to Panel
 		this.Panel.prototype.app = this;
@@ -111,7 +167,7 @@
 	// Default Options
 	Panel._defaults = {
 		parentEl: null,
-		route: null,
+		route: null, // TODO: Remove Route from config into Panels main or arg
 		template: null,
 		templateUrl: null,
 		append: false,
