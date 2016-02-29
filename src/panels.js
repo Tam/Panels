@@ -20,34 +20,52 @@
 
 	/**
 	 * Ajax
+	 * TODO: new Ajax(opts) (can set endpoint), return current Ajax func
 	 *
 	 * @param {object} opts - Options
 	 * @constructor
 	 */
 	var Ajax = function (opts) {
-		// TODO: Implement using a promise
+		// TODO: Implement using a promise (native w/ polyfill https://github.com/stefanpenner/es6-promise)
 		// TODO: Get ajax progress % for loading bar
+		// TODO: Add option to include middleware (i.e. auth check)
 		var self = this;
 		this.options = Helpers.mergeObject(Ajax._defaults, opts);
 
+		// Format body
 		var body = this.options.body;
-		if (body) body = (["string", "blob", "arraybuffer", "arraybufferview", "document", "text", "formdata"].indexOf(typeof body) > -1) ? body : JSON.stringify(body);
+		if (body) body = (["DOMString", "String", "Blob", "ArrayBuffer", "ArrayBufferView", "Document", "Text", "FormData"].indexOf(body.constructor.name) > -1) ? body : JSON.stringify(body);
 
+		// Open Request
 		var req = new XMLHttpRequest();
 		req.open(this.options.method, this.options.url, true);
 
-		// TODO: Set Content-Type header according to body type
+		// Set Content Type
+		if (this.options.body.constructor.name === "Blob") {
+			if (body.type) req.setRequestHeader("Content-Type", body.type);
+		} else if (this.options.body.constructor.name === "Document") {
+			if (body.contentType) req.setRequestHeader("Content-Type", body.contentType);
+		} else if (this.options.body.constructor.name === "FormData") {
+			req.setRequestHeader("Content-Type", "multipart/form-data");
+		} else if (this.options.body.constructor.name === "Object") {
+			req.setRequestHeader("Content-Type", "application/json");
+		} else if (["String", "Text"].indexOf(this.options.body.constructor.name) > -1) {
+			req.setRequestHeader("Content-Type", "text/plain");
+		}
 
+		// User defined headers (can override Content-Type)
 		for (var key in this.options.headers) {
 			if (this.options.headers.hasOwnProperty(key))
 				req.setRequestHeader(key, options.headers[key]);
 		}
 
+		// On Error Callback // TODO: Replace w/ promise
 		req.onerror = function () {
 			if (self.options.error)
 				self.options.error(req);
 		};
 
+		// On Load Callback // TODO: Replace w/ promise
 		req.onload = function () {
 			if (req.status >= 200 && req.status < 400) {
 				if (self.options.success)
@@ -58,6 +76,7 @@
 			}
 		};
 
+		// Send
 		if (body) req.send(body);
 		else req.send();
 	};
