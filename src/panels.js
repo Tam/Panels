@@ -67,6 +67,9 @@
 
 		// On Load Callback // TODO: Replace w/ promise
 		req.onload = function () {
+			// TODO: add global & local callbacks for status codes
+			// self.callback[req.status]();
+
 			if (req.status >= 200 && req.status < 400) {
 				if (self.options.success)
 					self.options.success(req, JSON.parse(req.responseText));
